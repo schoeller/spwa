@@ -640,23 +640,33 @@ class MainWindow(QMainWindow):
         self.output_tabs = QTabWidget()
         self.results_text = QPlainTextEdit(readOnly=True)
         self.output_tabs.addTab(self.results_text, "")
+
         plot_keys = ["net_pressure", "earth_pressure", "water_pressure",
                      "shear", "moment", "rotation", "deflection"]
         for key in plot_keys:
-            plot_widget = QWidget()
-            plot_layout = QVBoxLayout(plot_widget)
-            canvas = MplCanvas(self)
-            self.plot_canvases[key] = canvas
-            save_button = QPushButton()
-            save_button.setIcon(QIcon(str(ICON_ROOT / "save.svg")))
-            save_button.clicked.connect(lambda _, k=key: self.save_plot(k))
-            save_button.setEnabled(False)
-            button_layout = QHBoxLayout()
-            button_layout.addStretch(1)
-            button_layout.addWidget(save_button)
-            plot_layout.addWidget(canvas)
-            plot_layout.addLayout(button_layout)
-            self.output_tabs.addTab(plot_widget, "")
+            self._create_plot_tab(key)
+
+    def _create_plot_tab(self, key: str):
+        """Creates a single plot tab with a canvas and a save button."""
+        plot_widget = QWidget()
+        layout = QVBoxLayout(plot_widget)
+
+        canvas = MplCanvas(self)
+        self.plot_canvases[key] = canvas
+
+        save_button = QPushButton()
+        save_button.setIcon(QIcon(str(ICON_ROOT / "save.svg")))
+        save_button.clicked.connect(lambda _, k=key: self.save_plot(k))
+        save_button.setEnabled(False) # Initially disabled
+
+        button_layout = QHBoxLayout()
+        button_layout.addStretch(1)
+        button_layout.addWidget(save_button)
+
+        layout.addWidget(canvas)
+        layout.addLayout(button_layout)
+
+        self.output_tabs.addTab(plot_widget, "")
 
     def _language_changed(self, index):
         self.current_lang = "en" if index == 0 else "tr"

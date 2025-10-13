@@ -239,52 +239,63 @@ class AnalysisEngine:
     def _get_pressure_coeffs(self, phi_deg: float) -> Tuple[float, float]:
         """
         Calculates active (Ka) and passive (Kp) earth pressure coefficients.
-        Includes Mononobe-Okabe formulation for seismic conditions.
+
+        This method uses Coulomb's earth pressure theory for static conditions
+        and the Mononobe-Okabe formulation for seismic conditions.
+
+        Args:
+            phi_deg: The friction angle of the soil in degrees.
+
+        Returns:
+            A tuple containing the active (Ka or Kae) and passive (Kp or Kpe)
+            earth pressure coefficients.
         """
         phi, w = np.radians(phi_deg), self.wall
 
-        # Mononobe-Okabe for seismic conditions
+        # Mononobe-Okabe formulation for seismic conditions
         if w.is_seismic and w.kh > 0:
-            theta = np.arctan(w.kh / (1 - w.kv)) if (1 - w.kv) != 0 else np.pi/2
-            
-            # K_AE (Active Seismic)
+            # Seismic inertia angle
+            theta = np.arctan(w.kh / (1 - w.kv)) if (1 - w.kv) != 0 else np.pi / 2
+
+            # K_AE (Active Seismic Earth Pressure Coefficient)
+            # Numerator of the square root term in the M-O formula
             kae_num_term = np.sin(phi + w.delta) * np.sin(phi - w.beta - theta)
             kae_den_term = np.cos(w.delta) * np.cos(w.beta)
             if kae_num_term < 0 or kae_den_term <= 0:
-                kae_num_term = 0  # Avoid math domain error
-            
+                kae_num_term = 0  # Avoid math domain error for sqrt
+
             kae_sqrt_term = np.sqrt(kae_num_term / kae_den_term)
             kae_denominator = np.cos(theta) * (1 + kae_sqrt_term)**2
             kae = (np.cos(phi - theta)**2) / kae_denominator
-            
-            # K_PE (Passive Seismic)
+
+            # K_PE (Passive Seismic Earth Pressure Coefficient)
             kpe_num_term = np.sin(phi + w.delta) * np.sin(phi + w.alpha - theta)
             kpe_den_term = np.cos(w.delta) * np.cos(w.alpha)
             if kpe_num_term < 0 or kpe_den_term <= 0:
                 kpe_num_term = 0
-            
+
             kpe_sqrt_term = np.sqrt(kpe_num_term / kpe_den_term)
             kpe_denominator = np.cos(theta) * (1 - kpe_sqrt_term)**2
             kpe = (np.cos(phi - theta)**2) / kpe_denominator
             
             return kae, kpe
-            
-        # Coulomb's theory for static conditions
-        ka_den = np.sin(np.pi / 2 - w.delta) * (
-            1 + np.sqrt(
-                np.sin(phi + w.delta) * np.sin(phi - w.beta) /
-                (np.sin(np.pi / 2 - w.delta) * np.sin(np.pi / 2 + w.beta))
-            )
-        )**2
-        ka = (np.sin(np.pi / 2 + phi)**2) / (np.sin(np.pi / 2)**2 * ka_den)
+
+        # Coulomb's earth pressure theory for static conditions
+        # Active pressure coefficient (Ka)
+        ka_den_sqrt_term = np.sqrt(
+            np.sin(phi + w.delta) * np.sin(phi - w.beta) /
+            (np.sin(np.pi / 2 - w.delta) * np.sin(np.pi / 2 + w.beta))
+        )
+        ka_denominator = np.sin(np.pi / 2 - w.delta) * (1 + ka_den_sqrt_term)**2
+        ka = (np.sin(np.pi / 2 + phi)**2) / (np.sin(np.pi / 2)**2 * ka_denominator)
         
-        kp_den = np.sin(np.pi / 2 + w.delta) * (
-            1 - np.sqrt(
-                np.sin(phi + w.delta) * np.sin(phi + w.alpha) /
-                (np.sin(np.pi / 2 + w.delta) * np.sin(np.pi / 2 + w.alpha))
-            )
-        )**2
-        kp = (np.sin(np.pi / 2 - phi)**2) / (np.sin(np.pi / 2)**2 * kp_den)
+        # Passive pressure coefficient (Kp)
+        kp_den_sqrt_term = np.sqrt(
+            np.sin(phi + w.delta) * np.sin(phi + w.alpha) /
+            (np.sin(np.pi / 2 + w.delta) * np.sin(np.pi / 2 + w.alpha))
+        )
+        kp_denominator = np.sin(np.pi / 2 + w.delta) * (1 - kp_den_sqrt_term)**2
+        kp = (np.sin(np.pi / 2 - phi)**2) / (np.sin(np.pi / 2)**2 * kp_denominator)
         
         return ka, kp
 
@@ -354,15 +365,27 @@ class AnalysisEngine:
 
     def run(self):
         """Main execution function to run the complete analysis."""
-        solution, _, ier, _ = fsolve(
-            lambda d: self._moment_balance_equation(d[0]),
-            [self.wall.h * 0.8],  # Initial guess
-            full_output=True
-        )
-        if ier != 1:
-            raise RuntimeError("Solver for embedment depth failed to converge!")
-
-        self.d_required = solution[0]
+        try:
+            solution, _, ier, msg = fsolve(
+                lambda d: self._moment_balance_equation(d[0]),
+                [self.wall.h * 0.8],  # Initial guess
+                full_output=True
+            )
+            if ier != 1:
+                raise ValueError(
+                    "Embedment depth solver failed to converge. "
+                    "Check input parameters for physical validity. "
+                    f"Solver message: {msg}"
+                )
+            self.d_required = solution[0]
+            if self.d_required <= 0:
+                 raise ValueError(
+                    "Solver resulted in zero or negative embedment depth. "
+                    "The wall is likely unstable under the given loads."
+                )
+        except Exception as e:
+            # Re-raise exceptions with a more user-friendly context
+            raise RuntimeError(f"Failed during embedment calculation: {e}") from e
         self.d_design = np.ceil(
             self.d_required * self.wall.embedment_factor /
             self.wall.rounding_increment
