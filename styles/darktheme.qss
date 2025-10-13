@@ -1,0 +1,119 @@
+/* styles/dark_theme.qss */
+QWidget {
+    background-color: #2b2b2b;
+    color: #f0f0f0;
+    font-family: "Segoe UI", sans-serif;
+    font-size: 10pt;
+}
+
+QMainWindow {
+    border: none;
+}
+
+QGroupBox {
+    background-color: #3c3c3c;
+    border: 1px solid #555;
+    border-radius: 6px;
+    margin-top: 1em;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    subcontrol-position: top left;
+    padding: 0 5px;
+    left: 10px;
+    color: #ccc;
+}
+
+QLabel {
+    color: #f0f0f0;
+    background-color: transparent;
+}
+
+QLineEdit, QDoubleSpinBox, QComboBox {
+    background-color: #2b2b2b;
+    color: #f0f0f0;
+    border: 1px solid #555;
+    border-radius: 4px;
+    padding: 5px;
+}
+
+QDoubleSpinBox::up-button, QDoubleSpinBox::down-button,
+QComboBox::down-arrow {
+    border: none;
+}
+
+QPushButton, QToolButton {
+    background-color: #4a4a4a;
+    color: #f0f0f0;
+    border: 1px solid #666;
+    border-radius: 4px;
+    padding: 6px 12px;
+}
+
+QPushButton:hover, QToolButton:hover {
+    background-color: #5a5a5a;
+    border-color: #888;
+}
+
+QPushButton:pressed, QToolButton:pressed {
+    background-color: #404040;
+}
+
+/* Özel Run butonu stili */
+QPushButton#runButton {
+    background-color: #007acc;
+    font-weight: bold;
+    font-size: 12pt;
+    padding: 10px;
+}
+QPushButton#runButton:hover {
+    background-color: #008ae6;
+}
+
+QTabWidget::pane {
+    border: 1px solid #444;
+    border-radius: 4px;
+}
+
+QTabBar::tab {
+    background: #3c3c3c;
+    color: #ccc;
+    padding: 10px 25px;
+    border: 1px solid #444;
+    border-bottom: none;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+QTabBar::tab:selected {
+    background: #2b2b2b;
+    color: #fff;
+    font-weight: bold;
+}
+
+QScrollArea {
+    border: none;
+    background-color: #2b2b2b;
+}
+
+QPlainTextEdit {
+    background-color: #222;
+    color: #f0f0f0;
+    border: 1px solid #444;
+    font-family: "Courier New", monospace;
+}
+
+QMenuBar {
+    background-color: #3c3c3c;
+}
+QMenuBar::item:selected {
+    background-color: #5a5a5a;
+}
+QMenu {
+    background-color: #3c3c3c;
+    border: 1px solid #555;
+}
+QMenu::item:selected {
+    background-color: #007acc;
+}
