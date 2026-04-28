@@ -24,7 +24,7 @@ except (FileNotFoundError, json.JSONDecodeError) as e:
 
 DEFAULT_CONFIG = {
     "project_info": {
-        "title": "Project: Multi-Anchor Quay Wall",
+        "title": "Multi-Anchor Quay Wall",
         "analyst": "Python Analysis Script",
     },
     "analysis_options": {
@@ -98,6 +98,7 @@ TRANSLATIONS = {
         "exit_action": "E&xit", "lang_label": "Language:",
         "project_group": "Project Information",
         "project_title_label": "Project Title:",
+        "project_title_prefix": "Project:",
         "analysis_options_group": "Analysis Options",
         "seismic_checkbox": "Activate Seismic Analysis",
         "kh_label": "Horizontal Seismic Coeff. (kh):",
@@ -186,6 +187,7 @@ TRANSLATIONS = {
         "open_project": "&Proje Aç...", "save_project": "Projeyi &Farklı Kaydet...",
         "exit_action": "Çı&kış", "lang_label": "Dil:",
         "project_group": "Proje Bilgileri", "project_title_label": "Proje Başlığı:",
+        "project_title_prefix": "Proje: ",
         "analysis_options_group": "Analiz Seçenekleri",
         "seismic_checkbox": "Sismik Analizi Aktive Et",
         "kh_label": "Yatay Sismik Katsayı (kh):",
@@ -277,6 +279,7 @@ TRANSLATIONS = {
         "exit_action": "Be&enden", "lang_label": "Sprache:",
         "project_group": "Projektinformationen",
         "project_title_label": "Projekt-Titel:",
+        "project_title_prefix": "Projekt:",
         "analysis_options_group": "Analyse-Optionen",
         "seismic_checkbox": "Seismische Analyse aktivieren",
         "kh_label": "Horizontaler seismischer Koeffizient (kh):",

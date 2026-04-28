@@ -162,7 +162,8 @@ class Plotter:
             not self.analysis.is_cantilever else self.lang_dict["cantilever_wall"]
         seismic = (f"({self.lang_dict['seismic']}, kh={self.wall.kh})"
                    if self.wall.is_seismic else f"({self.lang_dict['static']})")
-        main_title = f"{title_info.get('title')}\n{analysis_type} {seismic}"
+        # main_title = f"{title_info.get('title')}\n{analysis_type} {seismic}"
+        main_title = f"{self.lang_dict.get('project_title_prefix', '')}{title_info.get('title', '')}\n{analysis_type} {seismic}"
         fig.suptitle(main_title, fontsize=14, y=0.99)
 
         axes[1].set_title(
