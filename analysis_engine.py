@@ -44,6 +44,8 @@ class SoilProfile:
     """Manages the collection of soil layers and related calculations."""
 
     def __init__(self, layers_data: List[Dict[str, Any]], gamma_water: float):
+        if not layers_data:
+            raise ValueError("At least one soil layer is required.")
         self.layers = [SoilLayer(**data) for data in layers_data]
         self.gamma_water = gamma_water
 
