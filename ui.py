@@ -798,10 +798,15 @@ class MainWindow(QMainWindow):
         return data
 
     def _set_config_to_ui(self, data: dict):
-        for i in range(self.anchor_layout.count() - 2, -1, -1):
-            self.anchor_layout.itemAt(i).widget().deleteLater()
-        for i in range(self.soil_layout.count() - 2, -1, -1):
-            self.soil_layout.itemAt(i).widget().deleteLater()
+        for i in range(self.anchor_layout.count() - 2):
+            item = self.anchor_layout.itemAt(i)
+            if item and item.widget():
+                item.widget().deleteLater()
+
+        for i in range(self.soil_layout.count() - 2):
+            item = self.soil_layout.itemAt(i)
+            if item and item.widget():
+                item.widget().deleteLater()
         self.inputs['title'].setText(
             data.get('project_info', {}).get('title', ''))
         opts = data.get('analysis_options', {})
