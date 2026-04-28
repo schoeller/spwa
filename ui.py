@@ -449,7 +449,7 @@ class MainWindow(QMainWindow):
             self.labels['lang_label'] = QLabel()
             header_layout.addWidget(self.labels['lang_label'])
             self.lang_combo = QComboBox()
-            self.lang_combo.addItems(["English", "Türkçe"])
+            self.lang_combo.addItems(["English", "Türkçe", "Deutsch"])
             self.lang_combo.currentIndexChanged.connect(self._language_changed)
             header_layout.addWidget(self.lang_combo)
             header_layout.addStretch(1)
@@ -659,7 +659,7 @@ class MainWindow(QMainWindow):
             self.output_tabs.addTab(plot_widget, "")
 
     def _language_changed(self, index):
-        self.current_lang = "en" if index == 0 else "tr"
+        self.current_lang = "en" if index == 0 else "tr" if index == 1 else "de"
         self.update_ui_language()
 
     def update_ui_language(self):
