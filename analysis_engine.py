@@ -340,7 +340,8 @@ class AnalysisEngine:
             # For anchored walls, moment is taken about the lowest anchor
             moment_ref_z = self.wall.anchor_depths[-1]
 
-        moment_arm = lambda z: (z - moment_ref_z)
+        def moment_arm(z: float) -> float:
+            return z - moment_ref_z
 
         m_act, _ = self._robust_quad(
             lambda z: self._calculate_pressure_at_depth(z)['active'] * moment_arm(z),

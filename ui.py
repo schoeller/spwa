@@ -253,7 +253,8 @@ class Plotter:
         
         xlims = ax.get_xlim()
         x_range = xlims[1] - xlims[0]
-        if abs(x_range) < 1e-9: x_range = 1 
+        if abs(x_range) < 1e-9:
+            x_range = 1  
         x_pos_ratio = (annot_val - xlims[0]) / x_range
         
         if x_pos_ratio > 0.8:
@@ -284,7 +285,8 @@ class Plotter:
         ax.grid(True, linestyle=':', alpha=0.6)
         min_val, max_val = np.min(data), np.max(data)
         margin = max(abs(min_val), abs(max_val)) * 0.3
-        if margin < 1e-9: margin = 0.1 
+        if margin < 1e-9:
+            margin = 0.1  
         ax.set_xlim(min_val - margin, max_val + margin)
 
     def _plot_dual_diagram(self, ax, data1, data2, xlabel, label1, label2,
@@ -301,7 +303,8 @@ class Plotter:
         min_val = -np.max(data2) if len(data2) > 0 else 0
         max_val = np.max(data1) if len(data1) > 0 else 0
         margin = max(abs(min_val), abs(max_val)) * 0.1
-        if margin < 1e-9: margin = 0.1
+        if margin < 1e-9:
+            margin = 0.1  
         ax.set_xlim(min_val - margin, max_val + margin)
 
     def _plot_schematic(self, ax: plt.Axes):
