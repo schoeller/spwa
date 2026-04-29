@@ -5,14 +5,13 @@ Contains the core classes and functions for performing geotechnical
 calculations based on the free-earth support method.
 """
 
-import copy
 import numpy as np
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional, Tuple
 from scipy.integrate import cumulative_trapezoid, quad
 from scipy.optimize import fsolve
 
-from config import DEFAULT_CONFIG, NUM_PLOT_POINTS, MM_PER_M
+from config import NUM_PLOT_POINTS, MM_PER_M
 
 
 @dataclass

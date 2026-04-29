@@ -19,7 +19,7 @@ import numpy as np
 from matplotlib.backends.backend_qtagg import (FigureCanvasQTAgg as
                                                FigureCanvas)
 from matplotlib.figure import Figure
-from PyQt6.QtCore import Qt, pyqtSignal, QSize
+from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtGui import QAction, QFont, QIcon  
 from PyQt6.QtWidgets import (QApplication, QCheckBox, QComboBox,
                              QDoubleSpinBox, QFileDialog, QFormLayout,
